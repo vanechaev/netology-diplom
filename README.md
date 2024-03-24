@@ -18,6 +18,6 @@ pip3 install -r kubespray/requirements.txt
 9. Скачал, забилдил и запушил: ![](media/test-app1.png) ![](media/test-app2.png)
 10. Развернул мониторинг в кластере `./terraform/monitoring.tf` используя helm и поднял сервис  `./k8s/s-grafana.yaml`
 11. Подготовил network_load_balancer для доступа к grafana и testapp `./terraform/balance.tf`
-12. Настроил развертывание в k8s тестового приложения `./terraform/app.tf` ![](media/nlb.png)  ![](media/db-graf.png)  ![](media/app-80.png)
+12. Настроил развертывание в k8s тестового приложения `./terraform/testapp.tf` ![](media/nlb.png)  ![](media/db-graf.png)  ![](media/app-80.png)
 13. Подготовил для агента манивест `./terraform/cicd.tf` он отрабатывает но не устанавливается...
 
