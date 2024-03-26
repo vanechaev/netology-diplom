@@ -15,9 +15,9 @@
 
 1. Создал сервисный аккаунт в Yandex.Cloud с достаточными правами.
    
-   - Создаем аккаунт `yc iam service-account create --name sa-dip`
-   - Назначаем права `yc resource-manager folder add-access-binding default --role admin --subject serviceAccount:===++ aje*-из предыдущей команды ++===`
-   - Получаем ключ `yc iam key create --folder-name default --service-account-name sa-dip --output key.json`
+   - Создал аккаунт `yc iam service-account create --name sa-dip`
+   - Назначил права `yc resource-manager folder add-access-binding default --role admin --subject serviceAccount:===++ aje*-из предыдущей команды ++===`
+   - Получил ключ `yc iam key create --folder-name default --service-account-name sa-dip --output key.json`
 
 2. Сделал terraform который создаст специальную сервисную учетку `tf-dip` и бакет для terraform backend в основном проекте [в отдельной папке](./prep/) и запустил его
    
