@@ -13,16 +13,34 @@
 <details>
 <summary>Создание облачной инфраструктуры</summary>
 
-1. Создаем сервисный аккаунт в Yandex.Cloud с достаточными правами.
+1. Создал сервисный аккаунт в Yandex.Cloud с достаточными правами.
    
    - Создаем аккаунт `yc iam service-account create --name sa-dip`
    - Назначаем права `yc resource-manager folder add-access-binding default --role admin --subject serviceAccount:===++ aje*-из предыдущей команды ++===`
    - Получаем ключ `yc iam key create --folder-name default --service-account-name sa-dip --output key.json`
 
-2. Готовим terraform который создаст специальную сервисную учетку `tf-dip` и S3 бакет для terraform backend в основном проекте [в отдельной папке](./prep/) и запускаем его
-    Результат:
+2. Сделал terraform который создаст специальную сервисную учетку `tf-dip` и бакет для terraform backend в основном проекте [в отдельной папке](./prep/) и запустил его
+   
+`terraform apply --auto-approve`
+
+![](media/prep1.png)
+
+![](media/bucket.png)
+
+3. Сделал основновной манифест terraform с VPC и запустил его используя ключи из backend.key (из предыдущего шага) [в папке terraform](./terraform/)
+
+`terraform init -backend-config="access_key=***" -backend-config="secret_key=***"`
 
 `terraform apply --auto-approve`
+
+![](media/net.png)
+
+`terraform destroy` и `terraform apply` отработали коректно
+
+![](media/net.png)
+
+![](media/net.png)
+
 </details>
 
 <details>
