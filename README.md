@@ -35,28 +35,21 @@
 
 ![](media/net.png)
 
-`terraform destroy` и `terraform apply` отработали коректно
+`terraform destroy` и `terraform apply` отработали корректно
 
-![](media/net.png)
+![](media/tf-des.png)
 
-![](media/net.png)
+![](media/tf-app.png)
 
 </details>
 
 <details>
-<summary>Задание 2. Установка и настройка локального kubectl</summary>
+<summary>Создание Kubernetes кластера</summary>
     
-1. Установить на локальную машину kubectl.
-2. Настроить локально подключение к кластеру.
-3. Подключиться к дашборду с помощью port-forward.
+1. При использовании манифестов `./terraform/vm-masters.tf`, `./terraform/vm-workers.tf` и `./terraform/ansible.tf`. будут развернуты ВМ и кластер через kubespray.
 
-</details>
+2. Установленный kubespray, переместил в `./ansible/kubespray`
 
-1. В отдельной папке (prep) создал тераформ котрый создает сервисную учетку и бакет ![](media/prep1.png)
-2. В основной папке (terraform) сделал vpc и проинициализировал с данными из backend.key `terraform init -backend-config="access_key=***" -backend-config="secret_key=***"`
-3. Destroy & Apply отработали корректно ![](media/tf-app.png) ![](media/tf-des.png)
-4. Использовал манифесты: `ansible.tf`, `vm-masters.tf`, `vm-workers.tf`
-5. Установил kubespray в `./ansible/kubespray`
 ```shell
 wget https://github.com/kubernetes-sigs/kubespray/archive/refs/tags/v2.21.0.tar.gz
 tar -xvzf v2.21.0.tar.gz
@@ -64,12 +57,91 @@ mv kubespray-2.21.0 kubespray
 python3 -m pip install --upgrade pip
 pip3 install -r kubespray/requirements.txt
 ```
-6. Запустил `terraform apply --auto-approve` ![](media/ans-done.png)
-7. Проверил кластер ![](media/cluster-test1.png) ![](media/cluster-test2.png)
-8. Создал репозиторий для приложения https://github.com/vanechaev/testapp.git
-9. Скачал, забилдил и запушил: ![](media/test-app1.png) ![](media/test-app2.png)
-10. Развернул мониторинг в кластере `./terraform/monitoring.tf` используя helm и поднял сервис  `./k8s/s-grafana.yaml`
-11. Подготовил network_load_balancer для доступа к grafana и testapp `./terraform/balance.tf`
-12. Настроил развертывание в k8s тестового приложения `./terraform/testapp.tf` ![](media/nlb.png)  ![](media/db-graf.png)  ![](media/app-80.png)
-13. Подготовил для агента манивест `./terraform/cicd.tf` он отрабатывает но не устанавливается...
+3. Запустил `terraform apply --auto-approve` 
 
+![](media/ans-done.png)
+
+4. Проверил кластер
+
+![](media/cluster-test1.png) 
+
+![](media/cluster-test2.png)
+
+</details>
+
+<details>
+<summary>Создание Kubernetes кластера</summary>
+   
+1. Создал отдельны репозиторий для тестого приложения [отдельный репозиторий](https://github.com/vanechaev/testapp.git). В котором находится HTML-страница и Docker-файл создающий конетейнер с nginx.
+
+2. Скачал, забилдил и запушил
+
+ ![](media/test-app1.png) 
+ 
+ ![](media/test-app2.png)
+
+</details>
+
+<details>
+<summary>Подготовка системы мониторинга и деплой приложения</summary>
+
+1. Используя манифест `./terraform/monitoring.tf` и helm, поднимится сервис  `./k8s/s-grafana.yaml`
+
+2. Используя манифест `./terraform/balance.tf` будет развернут балансировщик для доступа к grafana и testapp.
+
+3. Используя манифест `./terraform/testapp.tf` в k8s развернется тестовое приложение.
+
+![](media/nlb.png)  
+
+![](media/db-graf.png)  
+
+![](media/app-80.png)
+
+</details>
+
+<details>
+<summary>Установка и настройка CI/CD</summary>
+
+1. Перенес на GitLab код приложения [репозиторий](https://gitlab.com/vanechaev/testapp.git)
+
+2. Установил Агента в кластер с помощью helm используя манифест `./terraform/cicd.tf`
+
+![](media/gitlab-ag.png)
+
+3. В файле [.gitlab-ci.yml](https://gitlab.com/vanechaev/testapp/-/blob/main/.gitlab-ci.yml?ref_type=heads) настроил пайплайн для автоматической сборки и деплоя приложения.
+
+Пример без тега
+
+![](media/cicd-untag.png)
+
+Пример с тегом
+
+![](media/cicd-tag.png)
+
+Приложение обновляется
+
+![](media/cicd-tag-app.png)
+
+![](media/cicd-tag-app2.png)
+
+</details>
+
+---
+
+### Ссылки на полученные ресурсы:
+
+#### [ссылка на веб-страницу с приложением](http://158.160.153.222/)
+
+#### [веб-интерфейс графаны](http://158.160.154.16:3000/d/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=10s)
+login: admin  
+password: prom-operator
+
+#### [репозиторий с приложением](https://gitlab.com/vanechaev/testapp.git)
+
+#### [собранный docker image](https://hub.docker.com/repository/docker/vanechaev/testapp/general)
+
+#### ссылки на выполненные джобы в gitlab
+
+- [сборка по коммиту ](https://gitlab.com/vanechaev/testapp/-/jobs/6473591549)
+- [сборка по тегу](https://gitlab.com/vanechaev/testapp/-/jobs/6484450585)
+- [деплой из образа с тегом](https://gitlab.com/vanechaev/testapp/-/jobs/6484450599)
