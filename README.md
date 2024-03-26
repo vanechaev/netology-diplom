@@ -1,4 +1,38 @@
-# netology-diplom - черновик
+## Дипломный проект в Yandex.Cloud - Нечаев Владимир.
+
+---
+
+### Задание
+
+[Ссылка на дипломный практикум](https://github.com/netology-code/devops-diplom-yandexcloud/blob/780e41858bcff72855d9c3aa06733287b368c623/README.md)
+
+---
+
+### Выполнение
+
+<details>
+<summary>Создание облачной инфраструктуры</summary>
+
+1. Создаем сервисный аккаунт в Yandex.Cloud с достаточными правами.
+   
+   - Создаем аккаунт `yc iam service-account create --name sa-dip`
+   - Назначаем права `yc resource-manager folder add-access-binding default --role admin --subject serviceAccount:===++ aje*-из предыдущей команды ++===`
+   - Получаем ключ `yc iam key create --folder-name default --service-account-name sa-dip --output key.json`
+
+2. Готовим terraform который создаст специальную сервисную учетку `tf-dip` и S3 бакет для terraform backend в основном проекте [в отдельной папке](./prep/) и запускаем его
+    Результат:
+
+`terraform apply --auto-approve`
+</details>
+
+<details>
+<summary>Задание 2. Установка и настройка локального kubectl</summary>
+    
+1. Установить на локальную машину kubectl.
+2. Настроить локально подключение к кластеру.
+3. Подключиться к дашборду с помощью port-forward.
+
+</details>
 
 1. В отдельной папке (prep) создал тераформ котрый создает сервисную учетку и бакет ![](media/prep1.png)
 2. В основной папке (terraform) сделал vpc и проинициализировал с данными из backend.key `terraform init -backend-config="access_key=***" -backend-config="secret_key=***"`
